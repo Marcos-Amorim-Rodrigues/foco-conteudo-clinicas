@@ -2,20 +2,40 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, RefreshCw, Calendar, Tag, Target } from 'lucide-react';
+import { Download, RefreshCw, Calendar, LayoutGrid, Tag, Target, Video, Camera, FileText, Grid3X3 } from 'lucide-react';
 
-export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
-  const getObjectiveColor = (objective) => {
-    switch (objective) {
-      case 'Educativo':
+export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewModeChange }) => {
+  const getObjectiveColor = (objetivo) => {
+    switch (objetivo) {
+      case 'Educar':
+      case 'Educar e conscientizar':
+      case 'Educar e engajar':
+      case 'Educar e tranquilizar':
+      case 'Esclarecer e atrair':
+      case 'Educar e qualificar leads':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'Promocional':
+      case 'Atrair pacientes':
+      case 'Converter e atrair':
+      case 'Educar e atrair pacientes':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Engajamento':
+      case 'Engajar':
+      case 'Engajar e conhecer público':
+      case 'Ajudar e fidelizar':
         return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'Gerar confiança':
+      case 'Demonstrar autoridade':
+      case 'Educar e posicionar autoridade':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
+  };
+
+  const getTypeIcon = (tipo) => {
+    if (tipo.includes('Vídeo')) return <Video className="h-4 w-4" />;
+    if (tipo.includes('Carrossel')) return <Grid3X3 className="h-4 w-4" />;
+    if (tipo.includes('Post')) return <FileText className="h-4 w-4" />;
+    return <Camera className="h-4 w-4" />;
   };
 
   return (
@@ -31,10 +51,18 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
               <div className="hidden md:block h-6 w-px bg-gray-300"></div>
               <div className="hidden md:flex items-center text-gray-600">
                 <Calendar className="h-5 w-5 mr-2" />
-                <span>Seu calendário de conteúdo</span>
+                <span>Visão Grade do Calendário</span>
               </div>
             </div>
             <div className="flex space-x-3">
+              <Button
+                onClick={() => onViewModeChange('kanban')}
+                variant="outline"
+                className="border-gray-300 text-gray-600 hover:bg-gray-50"
+              >
+                <LayoutGrid className="h-4 w-4 mr-2" />
+                Visão Kanban
+              </Button>
               <Button
                 onClick={onDownload}
                 variant="outline"
@@ -59,15 +87,15 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black mb-2">
-            Seu calendário de 30 dias está pronto!
+            Seu calendário estratégico está pronto!
           </h1>
           <p className="text-gray-600">
-            Aqui estão seus posts personalizados. Você pode baixar o arquivo Excel ou gerar um novo calendário.
+            Conteúdo personalizado e estratégico baseado nos procedimentos da sua clínica.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card className="border-green-200 bg-green-50">
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -76,7 +104,7 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-green-800">
-                    {calendarData.filter(post => post.objective === 'Educativo').length}
+                    {calendarData.filter(post => post.objetivo.includes('Educar')).length}
                   </p>
                   <p className="text-green-600">Posts Educativos</p>
                 </div>
@@ -92,9 +120,9 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-blue-800">
-                    {calendarData.filter(post => post.objective === 'Promocional').length}
+                    {calendarData.filter(post => post.objetivo.includes('Atrair')).length}
                   </p>
-                  <p className="text-blue-600">Posts Promocionais</p>
+                  <p className="text-blue-600">Posts Atrativos</p>
                 </div>
               </div>
             </CardContent>
@@ -108,9 +136,25 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-purple-800">
-                    {calendarData.filter(post => post.objective === 'Engajamento').length}
+                    {calendarData.filter(post => post.objetivo.includes('Engajar')).length}
                   </p>
                   <p className="text-purple-600">Posts de Engajamento</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-orange-200 bg-orange-50">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="bg-orange-100 p-3 rounded-full mr-4">
+                  <Target className="h-6 w-6 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-orange-800">
+                    {calendarData.filter(post => post.objetivo.includes('autoridade') || post.objetivo.includes('confiança')).length}
+                  </p>
+                  <p className="text-orange-600">Posts de Autoridade</p>
                 </div>
               </div>
             </CardContent>
@@ -122,26 +166,42 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
           {calendarData.map((post) => (
             <Card key={post.id} className="hover:shadow-lg transition-shadow duration-300 border-gray-200">
               <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
                     <div className="bg-blue-100 text-blue-800 text-sm font-medium px-2 py-1 rounded">
-                      Dia {post.day}
+                      {post.dia}
                     </div>
+                    {post.isWeekend && (
+                      <div className="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-1 rounded">
+                        FDS
+                      </div>
+                    )}
                   </div>
-                  <div className={`text-xs font-medium px-2 py-1 rounded border ${getObjectiveColor(post.objective)}`}>
-                    {post.objective}
+                  <div className="flex items-center space-x-1">
+                    {getTypeIcon(post.tipo)}
                   </div>
                 </div>
                 <CardTitle className="text-lg text-black leading-tight">
-                  {post.title}
+                  {post.titulo}
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                  {post.description}
+                <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+                  {post.descricao}
                 </p>
-                <div className="text-xs text-blue-600 font-medium">
-                  {post.hashtags}
+                
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500">
+                    {post.tipo}
+                  </div>
+                  
+                  <div className={`text-xs font-medium px-2 py-1 rounded border ${getObjectiveColor(post.objetivo)} w-fit`}>
+                    {post.objetivo}
+                  </div>
+                  
+                  <div className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded w-fit">
+                    {post.procedimento}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -151,10 +211,10 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
         {/* Bottom Actions */}
         <div className="mt-12 text-center bg-white p-8 rounded-2xl border border-gray-200">
           <h3 className="text-xl font-semibold text-black mb-4">
-            Gostou do seu calendário?
+            Pronto para implementar sua estratégia?
           </h3>
           <p className="text-gray-600 mb-6">
-            Baixe o arquivo Excel para usar em suas ferramentas de agendamento ou gere um novo calendário.
+            Baixe o arquivo Excel para usar em suas ferramentas de agendamento ou gere uma nova estratégia.
           </p>
           <div className="flex justify-center space-x-4">
             <Button
@@ -172,7 +232,7 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate }) => {
               className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8"
             >
               <RefreshCw className="h-5 w-5 mr-2" />
-              Criar novo calendário
+              Criar nova estratégia
             </Button>
           </div>
         </div>

@@ -3,13 +3,16 @@ import { Calendar, Clock, TrendingUp, Users, Download, RefreshCw } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { ClinicModal } from '@/components/ClinicModal';
 import { CalendarView } from '@/components/CalendarView';
+import { KanbanView } from '@/components/KanbanView';
 import { useToast } from '@/hooks/use-toast';
+import { generatePersonalizedCalendar } from '@/utils/contentGenerator';
 import emailjs from 'emailjs-com';
 
 const Index = () => {
   const [showModal, setShowModal] = useState(false);
   const [calendarData, setCalendarData] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [viewMode, setViewMode] = useState('kanban'); // 'kanban' or 'grid'
   const { toast } = useToast();
 
   const sendEmail = (formData) => {
@@ -42,10 +45,10 @@ const Index = () => {
       // Send email first
       await sendEmail(clinicData);
       
-      // Simular geração de calendário com IA
+      // Generate personalized calendar with AI-like logic
       setTimeout(() => {
-        const mockCalendar = generateMockCalendar(clinicData);
-        setCalendarData(mockCalendar);
+        const personalizedCalendar = generatePersonalizedCalendar(clinicData);
+        setCalendarData(personalizedCalendar);
         setShowModal(false);
         setIsGenerating(false);
         
@@ -53,7 +56,7 @@ const Index = () => {
           title: "Calendário gerado com sucesso!",
           description: "Seu calendário de 30 dias está pronto para uso. E-mail enviado com sucesso!",
         });
-      }, 2000);
+      }, 3000);
     } catch (error) {
       setIsGenerating(false);
       toast({
@@ -62,30 +65,6 @@ const Index = () => {
         variant: "destructive"
       });
     }
-  };
-
-  const generateMockCalendar = (clinicData) => {
-    const topics = [
-      'Dicas de higiene bucal',
-      'Prevenção de cáries',
-      'Importância da consulta regular',
-      'Clareamento dental',
-      'Ortodontia moderna',
-      'Implantes dentários',
-      'Saúde gengival',
-      'Alimentação e saúde bucal',
-      'Tecnologia odontológica',
-      'Depoimento de paciente'
-    ];
-    
-    return Array.from({ length: 30 }, (_, i) => ({
-      id: i + 1,
-      day: i + 1,
-      title: topics[i % topics.length],
-      description: `Post personalizado para ${clinicData.clinicName} sobre ${topics[i % topics.length].toLowerCase()}`,
-      objective: i % 3 === 0 ? 'Educativo' : i % 3 === 1 ? 'Promocional' : 'Engajamento',
-      hashtags: '#odontologia #saudebucal #dentista'
-    }));
   };
 
   const handleDownload = () => {
@@ -101,11 +80,19 @@ const Index = () => {
   };
 
   if (calendarData) {
-    return (
+    return viewMode === 'kanban' ? (
+      <KanbanView 
+        calendarData={calendarData}
+        onDownload={handleDownload}
+        onRegenerate={handleRegenerate}
+        onViewModeChange={setViewMode}
+      />
+    ) : (
       <CalendarView 
         calendarData={calendarData}
         onDownload={handleDownload}
         onRegenerate={handleRegenerate}
+        onViewModeChange={setViewMode}
       />
     );
   }
