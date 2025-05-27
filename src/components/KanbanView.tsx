@@ -1,12 +1,31 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, RefreshCw, Calendar, Grid3X3, Tag, Target, Clock, Video, Camera, FileText } from 'lucide-react';
 
-export const KanbanView = ({ calendarData, onDownload, onRegenerate, onViewModeChange }) => {
+interface Post {
+  id: number;
+  dia: string;
+  week: number;
+  day: number;
+  titulo: string;
+  descricao: string;
+  tipo: string;
+  objetivo: string;
+  procedimento: string;
+  isWeekend: boolean;
+}
+
+interface KanbanViewProps {
+  calendarData: Post[];
+  onDownload: () => void;
+  onRegenerate: () => void;
+  onViewModeChange: (mode: string) => void;
+}
+
+export const KanbanView: React.FC<KanbanViewProps> = ({ calendarData, onDownload, onRegenerate, onViewModeChange }) => {
   // Group calendar data by weeks
-  const weekGroups = calendarData.reduce((acc, post) => {
+  const weekGroups = calendarData.reduce((acc: Record<string, Post[]>, post) => {
     const weekKey = `Semana ${post.week}`;
     if (!acc[weekKey]) {
       acc[weekKey] = [];
@@ -15,7 +34,7 @@ export const KanbanView = ({ calendarData, onDownload, onRegenerate, onViewModeC
     return acc;
   }, {});
 
-  const getObjectiveColor = (objetivo) => {
+  const getObjectiveColor = (objetivo: string) => {
     switch (objetivo) {
       case 'Educar':
       case 'Educar e conscientizar':
@@ -23,33 +42,39 @@ export const KanbanView = ({ calendarData, onDownload, onRegenerate, onViewModeC
       case 'Educar e tranquilizar':
       case 'Esclarecer e atrair':
       case 'Educar e qualificar leads':
+      case 'Inconsciente':
         return 'bg-green-100 text-green-800 border-green-200';
       case 'Atrair pacientes':
       case 'Converter e atrair':
       case 'Educar e atrair pacientes':
+      case 'Consciente do Problema':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'Engajar':
       case 'Engajar e conhecer público':
       case 'Ajudar e fidelizar':
+      case 'Consciente da Solução':
         return 'bg-purple-100 text-purple-800 border-purple-200';
       case 'Gerar confiança':
       case 'Demonstrar autoridade':
       case 'Educar e posicionar autoridade':
+      case 'Consciente do Produto':
         return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Totalmente Consciente':
+        return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const getTypeIcon = (tipo) => {
+  const getTypeIcon = (tipo: string) => {
     if (tipo.includes('Vídeo')) return <Video className="h-4 w-4" />;
     if (tipo.includes('Carrossel')) return <Grid3X3 className="h-4 w-4" />;
     if (tipo.includes('Post')) return <FileText className="h-4 w-4" />;
     return <Camera className="h-4 w-4" />;
   };
 
-  const getWeekStats = (posts) => {
-    const objectives = posts.reduce((acc, post) => {
+  const getWeekStats = (posts: Post[]) => {
+    const objectives = posts.reduce((acc: Record<string, number>, post) => {
       const obj = post.objetivo.split(' ')[0]; // Get first word
       acc[obj] = (acc[obj] || 0) + 1;
       return acc;
@@ -191,30 +216,36 @@ export const KanbanView = ({ calendarData, onDownload, onRegenerate, onViewModeC
           <h3 className="text-xl font-semibold text-black mb-4">
             Resumo do seu calendário estratégico
           </h3>
-          <div className="grid md:grid-cols-4 gap-4 text-center">
+          <div className="grid md:grid-cols-5 gap-4 text-center">
             <div className="p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
-                {calendarData.filter(post => post.objetivo.includes('Educar')).length}
+                {calendarData.filter(post => post.objetivo === 'Inconsciente').length}
               </div>
-              <div className="text-sm text-green-700">Posts Educativos</div>
+              <div className="text-sm text-green-700">Inconsciente</div>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
-                {calendarData.filter(post => post.objetivo.includes('Atrair')).length}
+                {calendarData.filter(post => post.objetivo === 'Consciente do Problema').length}
               </div>
-              <div className="text-sm text-blue-700">Posts Atrativos</div>
+              <div className="text-sm text-blue-700">Problema</div>
             </div>
             <div className="p-4 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">
-                {calendarData.filter(post => post.objetivo.includes('Engajar')).length}
+                {calendarData.filter(post => post.objetivo === 'Consciente da Solução').length}
               </div>
-              <div className="text-sm text-purple-700">Posts de Engajamento</div>
+              <div className="text-sm text-purple-700">Solução</div>
             </div>
             <div className="p-4 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">
-                {calendarData.filter(post => post.objetivo.includes('autoridade') || post.objetivo.includes('confiança')).length}
+                {calendarData.filter(post => post.objetivo === 'Consciente do Produto').length}
               </div>
-              <div className="text-sm text-orange-700">Posts de Autoridade</div>
+              <div className="text-sm text-orange-700">Produto</div>
+            </div>
+            <div className="p-4 bg-red-50 rounded-lg">
+              <div className="text-2xl font-bold text-red-600">
+                {calendarData.filter(post => post.objetivo === 'Totalmente Consciente').length}
+              </div>
+              <div className="text-sm text-red-700">Conversão</div>
             </div>
           </div>
         </div>

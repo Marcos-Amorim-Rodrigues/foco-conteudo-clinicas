@@ -4,34 +4,45 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, RefreshCw, Calendar, LayoutGrid, Tag, Target, Video, Camera, FileText, Grid3X3 } from 'lucide-react';
 
-export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewModeChange }) => {
-  const getObjectiveColor = (objetivo) => {
+interface Post {
+  id: number;
+  dia: string;
+  week: number;
+  day: number;
+  titulo: string;
+  descricao: string;
+  tipo: string;
+  objetivo: string;
+  procedimento: string;
+  isWeekend: boolean;
+}
+
+interface CalendarViewProps {
+  calendarData: Post[];
+  onDownload: () => void;
+  onRegenerate: () => void;
+  onViewModeChange: (mode: string) => void;
+}
+
+export const CalendarView: React.FC<CalendarViewProps> = ({ calendarData, onDownload, onRegenerate, onViewModeChange }) => {
+  const getObjectiveColor = (objetivo: string) => {
     switch (objetivo) {
-      case 'Educar':
-      case 'Educar e conscientizar':
-      case 'Educar e engajar':
-      case 'Educar e tranquilizar':
-      case 'Esclarecer e atrair':
-      case 'Educar e qualificar leads':
+      case 'Inconsciente':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'Atrair pacientes':
-      case 'Converter e atrair':
-      case 'Educar e atrair pacientes':
+      case 'Consciente do Problema':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Engajar':
-      case 'Engajar e conhecer público':
-      case 'Ajudar e fidelizar':
+      case 'Consciente da Solução':
         return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'Gerar confiança':
-      case 'Demonstrar autoridade':
-      case 'Educar e posicionar autoridade':
+      case 'Consciente do Produto':
         return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Totalmente Consciente':
+        return 'bg-red-100 text-red-800 border-red-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const getTypeIcon = (tipo) => {
+  const getTypeIcon = (tipo: string) => {
     if (tipo.includes('Vídeo')) return <Video className="h-4 w-4" />;
     if (tipo.includes('Carrossel')) return <Grid3X3 className="h-4 w-4" />;
     if (tipo.includes('Post')) return <FileText className="h-4 w-4" />;
@@ -90,12 +101,12 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewMod
             Seu calendário estratégico está pronto!
           </h1>
           <p className="text-gray-600">
-            Conteúdo personalizado e estratégico baseado nos procedimentos da sua clínica.
+            Conteúdo personalizado e estratégico baseado no funil de consciência do cliente.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-5 gap-6 mb-8">
           <Card className="border-green-200 bg-green-50">
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -104,9 +115,9 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewMod
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-green-800">
-                    {calendarData.filter(post => post.objetivo.includes('Educar')).length}
+                    {calendarData.filter(post => post.objetivo === 'Inconsciente').length}
                   </p>
-                  <p className="text-green-600">Posts Educativos</p>
+                  <p className="text-green-600">Inconsciente</p>
                 </div>
               </div>
             </CardContent>
@@ -120,9 +131,9 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewMod
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-blue-800">
-                    {calendarData.filter(post => post.objetivo.includes('Atrair')).length}
+                    {calendarData.filter(post => post.objetivo === 'Consciente do Problema').length}
                   </p>
-                  <p className="text-blue-600">Posts Atrativos</p>
+                  <p className="text-blue-600">Problema</p>
                 </div>
               </div>
             </CardContent>
@@ -136,9 +147,9 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewMod
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-purple-800">
-                    {calendarData.filter(post => post.objetivo.includes('Engajar')).length}
+                    {calendarData.filter(post => post.objetivo === 'Consciente da Solução').length}
                   </p>
-                  <p className="text-purple-600">Posts de Engajamento</p>
+                  <p className="text-purple-600">Solução</p>
                 </div>
               </div>
             </CardContent>
@@ -152,9 +163,25 @@ export const CalendarView = ({ calendarData, onDownload, onRegenerate, onViewMod
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-orange-800">
-                    {calendarData.filter(post => post.objetivo.includes('autoridade') || post.objetivo.includes('confiança')).length}
+                    {calendarData.filter(post => post.objetivo === 'Consciente do Produto').length}
                   </p>
-                  <p className="text-orange-600">Posts de Autoridade</p>
+                  <p className="text-orange-600">Produto</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-red-200 bg-red-50">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="bg-red-100 p-3 rounded-full mr-4">
+                  <Target className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-red-800">
+                    {calendarData.filter(post => post.objetivo === 'Totalmente Consciente').length}
+                  </p>
+                  <p className="text-red-600">Conversão</p>
                 </div>
               </div>
             </CardContent>

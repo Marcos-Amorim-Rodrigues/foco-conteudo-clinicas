@@ -2,200 +2,381 @@
 export const generatePersonalizedCalendar = (clinicData) => {
   const { clinicName, procedures, city, monthlyRevenue } = clinicData;
   
-  // Define content templates based on procedures
-  const procedureTemplates = {
+  // Define awareness funnel stages
+  const funnelStages = [
+    'Inconsciente',          // Unaware - 20% (6 posts)
+    'Consciente do Problema', // Problem-Aware - 25% (7-8 posts)
+    'Consciente da Solução', // Solution-Aware - 25% (7-8 posts)
+    'Consciente do Produto', // Product-Aware - 20% (6 posts)
+    'Totalmente Consciente'  // Most-Aware - 10% (3 posts)
+  ];
+
+  // Content templates organized by procedure and funnel stage
+  const contentTemplates = {
     'Limpeza e Profilaxia': {
-      educational: [
+      'Inconsciente': [
         {
-          titulo: "O que acontece quando você não faz limpeza há mais de 6 meses",
-          descricao: `Grave um vídeo no consultório mostrando, com um modelo de dentes ou imagens, como o tártaro se acumula. Explique de forma visual os problemas que isso pode causar: gengivite, mau hálito e até perda de dentes. Use uma linguagem simples e termine com: "Na ${clinicName}, cuidamos da sua saúde bucal com carinho. Agende sua limpeza!"`,
-          tipo: "Vídeo explicativo",
-          objetivo: "Educar e conscientizar"
+          titulo: "Por que algumas pessoas têm hálito mais forte pela manhã?",
+          descricao: `Grave um vídeo explicando de forma curiosa como nossa boca funciona durante o sono. Use uma linguagem descontraída e mostre como é normal, mas que pode indicar outras coisas. Termine com: "Você já percebeu isso? Conta aqui nos comentários!"`,
+          tipo: "Vídeo (Reels)",
+          objetivo: "Inconsciente"
         },
         {
-          titulo: "Mitos sobre limpeza dental que você precisa conhecer",
-          descricao: `Crie um carrossel desmistificando crenças como "limpeza estraga o esmalte" ou "dói muito". Use um design limpo com ícones de verdadeiro/falso. No final, convide: "Ainda tem dúvidas? Mande um direct que nossa equipe esclarece tudo!"`,
-          tipo: "Carrossel educativo",
-          objetivo: "Educar e engajar"
+          titulo: "O que a cor da sua língua revela sobre sua saúde",
+          descricao: `Carrossel mostrando diferentes colorações da língua e o que podem indicar. Use imagens ilustrativas e linguagem simples. Desperte curiosidade sem assustar. Final: "Observar sua boca pode te dar pistas importantes sobre sua saúde geral!"`,
+          tipo: "Carrossel",
+          objetivo: "Inconsciente"
         }
       ],
-      social: [
+      'Consciente do Problema': [
         {
-          titulo: "Bastidores: como é uma limpeza na prática",
-          descricao: `Filme (com autorização) um atendimento real de limpeza, mostrando o ambiente acolhedor da ${clinicName}. Destaque o cuidado da equipe e a tecnologia utilizada. Música suave e cortes dinâmicos. Final: "Você merece esse cuidado especial."`,
-          tipo: "Vídeo de bastidores",
-          objetivo: "Gerar confiança"
+          titulo: "Sangramento na gengiva: seu corpo está pedindo socorro",
+          descricao: `Vídeo mostrando como o sangramento é um sinal de inflamação. Explique as consequências de ignorar esse sintoma: desde mal-hálito até problemas cardíacos. Use um tom acolhedor, não assustador. CTA: "Se isso acontece com você, não ignore. Vamos conversar?"`,
+          tipo: "Vídeo explicativo",
+          objetivo: "Consciente do Problema"
+        }
+      ],
+      'Consciente da Solução': [
+        {
+          titulo: "Limpeza profissional: muito além da escovação em casa",
+          descricao: `Grave no consultório mostrando a diferença entre limpeza caseira e profissional. Use modelos de dentes para demonstrar onde a escova não alcança. Explique o processo de forma didática. Final: "É isso que uma limpeza profissional faz pelos seus dentes!"`,
+          tipo: "Vídeo educativo",
+          objetivo: "Consciente da Solução"
+        }
+      ],
+      'Consciente do Produto': [
+        {
+          titulo: "Como fazemos a limpeza aqui na ${clinicName}",
+          descricao: `Vídeo mostrando seu protocolo de limpeza, destacando diferenciais: ultrassom moderno, jato de bicarbonato, fluoretação. Mostre o ambiente acolhedor. Tom: "Aqui você recebe todo esse cuidado especializado."`,
+          tipo: "Vídeo institucional",
+          objetivo: "Consciente do Produto"
+        }
+      ],
+      'Totalmente Consciente': [
+        {
+          titulo: "Junho: mês da saúde bucal na ${clinicName}",
+          descricao: `Post promocional com condição especial para limpeza. Destaque a urgência e facilite o agendamento. Use call-to-action direto: "Agende sua limpeza ainda hoje pelo WhatsApp. Link na bio!" Inclua preço ou desconto específico.`,
+          tipo: "Post promocional",
+          objetivo: "Totalmente Consciente"
         }
       ]
     },
     'Clareamento Dental': {
-      educational: [
+      'Inconsciente': [
         {
-          titulo: "Clareamento caseiro vs. profissional: qual a diferença real?",
-          descricao: `Monte um vídeo comparativo mostrando produtos caseiros (bicarbonato, fitas) vs. tratamento profissional. Explique os riscos dos métodos caseiros e os benefícios do clareamento supervisionado. Use um tom de especialista mas acessível. CTA: "Quer um sorriso seguro e duradouro? Converse conosco!"`,
-          tipo: "Vídeo comparativo",
-          objetivo: "Educar e posicionar autoridade"
+          titulo: "Você sabia que existem alimentos que deixam os dentes mais brancos?",
+          descricao: `Carrossel revelando alimentos surpreendentes que ajudam na limpeza natural dos dentes: maçã, morango, queijo. Conte curiosidades interessantes. Final: "A natureza é incrível, né? Qual desses você já sabia?"`,
+          tipo: "Carrossel",
+          objetivo: "Inconsciente"
         },
         {
-          titulo: "5 alimentos que mancham seus dentes (e você nem imagina)",
-          descricao: `Carrossel revelando alimentos surpreendentes que causam manchas: molho de tomate, beterraba, açaí. Para cada alimento, dê uma dica de como consumir sem prejudicar os dentes. Final: "Já pensou em fazer um clareamento profissional? Agende uma avaliação!"`,
-          tipo: "Carrossel informativo",
-          objetivo: "Educar e atrair pacientes"
+          titulo: "A história do sorriso: por que valorizamos dentes brancos?",
+          descricao: `Vídeo contando a evolução histórica da valorização dos dentes brancos. Use curiosidades e fatos interessantes. Tom storytelling descontraído. Termine com: "Interessante como isso mudou com o tempo, não é?"`,
+          tipo: "Vídeo storytelling",
+          objetivo: "Inconsciente"
         }
       ],
-      promotional: [
+      'Consciente do Problema': [
         {
-          titulo: "Transformação real: clareamento em ${clinicName}",
-          descricao: `Post com antes e depois de um paciente (com autorização). Conte brevemente a história e destaque o resultado natural. Use depoimento em texto ou áudio. Inclua informações sobre o procedimento e condições especiais do mês.`,
-          tipo: "Prova social",
-          objetivo: "Converter e atrair"
+          titulo: "Dentes amarelados: quando a autoestima despenca",
+          descricao: `Conte a história (sem nomes) de uma paciente que parou de sorrir em fotos por causa dos dentes amarelados. Mostre como isso afetou sua vida social e profissional. Use empatia total. CTA: "Se você se sente assim, saiba que tem solução."`,
+          tipo: "Vídeo storytelling",
+          objetivo: "Consciente do Problema"
+        }
+      ],
+      'Consciente da Solução': [
+        {
+          titulo: "Clareamento: como funciona na prática",
+          descricao: `Explique o processo de clareamento com linguagem simples. Mostre antes e depois de casos reais (com autorização). Desmistifique mitos sobre sensibilidade. Seja transparente sobre tempo e resultados esperados.`,
+          tipo: "Vídeo educativo",
+          objetivo: "Consciente da Solução"
+        }
+      ],
+      'Consciente do Produto': [
+        {
+          titulo: "Nosso protocolo de clareamento: segurança em primeiro lugar",
+          descricao: `Mostre como vocês fazem o clareamento na ${clinicName}: avaliação prévia, proteção das gengivas, acompanhamento durante todo processo. Destaque diferenciais técnicos de forma acessível.`,
+          tipo: "Vídeo institucional",
+          objetivo: "Consciente do Produto"
+        }
+      ],
+      'Totalmente Consciente': [
+        {
+          titulo: "Transforme seu sorriso ainda este mês!",
+          descricao: `Post com forte call-to-action para clareamento. Inclua promoção especial, facilite pagamento, destaque rapidez do resultado. "Clareamento profissional com X% de desconto. Últimas vagas de junho!"`,
+          tipo: "Post promocional",
+          objetivo: "Totalmente Consciente"
         }
       ]
     },
     'Implantes': {
-      educational: [
+      'Inconsciente': [
         {
-          titulo: "Implante dentário: desmistificando o procedimento",
-          descricao: `Grave no consultório explicando o passo a passo do implante com linguagem simples. Use modelos 3D ou imagens ilustrativas. Aborde medos comuns sobre dor e tempo de cicatrização. Termine com: "Na ${clinicName}, você tem todo o suporte necessário."`,
-          tipo: "Vídeo educativo",
-          objetivo: "Educar e tranquilizar"
-        },
-        {
-          titulo: "Quanto tempo dura um implante dentário?",
-          descricao: `Vídeo curto respondendo essa dúvida frequente. Explique os fatores que influenciam a durabilidade (higiene, qualidade do implante, acompanhamento). Reforce a importância do pós-operatório. CTA: "Tire suas dúvidas numa consulta. Agende já!"`,
-          tipo: "Vídeo informativo",
-          objetivo: "Esclarecer e atrair"
+          titulo: "Você conhece alguém que perdeu um dente e nunca mais foi o mesmo?",
+          descricao: `Vídeo reflexivo sobre como a perda de dentes afeta as pessoas. Conte de forma humanizada, sem mencionar tratamentos. Foque no impacto emocional e social. Final: "A gente nem percebe o quanto nossos dentes são importantes, né?"`,
+          tipo: "Vídeo reflexivo",
+          objetivo: "Inconsciente"
         }
       ],
-      authority: [
+      'Consciente do Problema': [
         {
-          titulo: "Tecnologia de ponta em implantodontia",
-          descricao: `Mostre os equipamentos modernos da ${clinicName} para implantes. Explique como a tecnologia torna o procedimento mais preciso e confortável. Use imagens do consultório e equipamentos. Destaque diferenciais técnicos de forma acessível.`,
+          titulo: "O que acontece com seu rosto quando você perde um dente",
+          descricao: `Explique como a falta de dentes causa envelhecimento precoce, problemas na mastigação e autoestima. Use imagens ilustrativas. Tom educativo mas empático. CTA: "Se você está passando por isso, saiba que não precisa ser para sempre."`,
+          tipo: "Vídeo educativo",
+          objetivo: "Consciente do Problema"
+        }
+      ],
+      'Consciente da Solução': [
+        {
+          titulo: "Implante dentário: a solução mais próxima do dente natural",
+          descricao: `Explique como o implante funciona, suas vantagens sobre outras próteses. Use analogias simples e linguagem acessível. Desmistifique medos comuns sobre cirurgia e dor.`,
+          tipo: "Vídeo educativo",
+          objetivo: "Consciente da Solução"
+        }
+      ],
+      'Consciente do Produto': [
+        {
+          titulo: "Implantodontia na ${clinicName}: tecnologia e cuidado humano",
+          descricao: `Mostre seus equipamentos de ponta, certificações, experiência da equipe. Destaque o acompanhamento personalizado que vocês oferecem. Tom: autoridade técnica com calor humano.`,
           tipo: "Vídeo institucional",
-          objetivo: "Demonstrar autoridade"
+          objetivo: "Consciente do Produto"
+        }
+      ],
+      'Totalmente Consciente': [
+        {
+          titulo: "Avaliação gratuita para implante - só até sexta!",
+          descricao: `Oferta limitada para avaliação de implante. CTA direto e urgência. Facilite agendamento e destaque que é sem compromisso. "Agende pelo WhatsApp agora! Link na bio. Vagas limitadas!"`,
+          tipo: "Post promocional",
+          objetivo: "Totalmente Consciente"
         }
       ]
     },
     'Ortodontia': {
-      educational: [
+      'Inconsciente': [
         {
-          titulo: "Aparelho transparente vs. metal: prós e contras",
-          descricao: `Vídeo comparativo mostrando os diferentes tipos de aparelho. Explique indicações, tempo de tratamento, cuidados e custos de forma honesta. Use modelos ou casos reais. Final: "Cada caso é único. Venha fazer sua avaliação ortodôntica!"`,
-          tipo: "Vídeo comparativo",
-          objetivo: "Educar e qualificar leads"
-        },
-        {
-          titulo: "Meu aparelho quebrou! E agora?",
-          descricao: `Carrossel com dicas práticas para emergências ortodônticas: bracket solto, fio machucando, elástico que saiu. Dê orientações de primeiros socorros e reforce quando procurar o ortodontista. CTA: "Emergência ortodôntica? Entre em contato!"`,
-          tipo: "Carrossel de dicas",
-          objetivo: "Ajudar e fidelizar"
+          titulo: "Por que algumas pessoas 'mordem a língua' mais que outras?",
+          descricao: `Explique de forma curiosa como o posicionamento dos dentes influencia nossa mastigação e fala. Use tom descontraído e científico. Final: "Nosso corpo é uma engenharia perfeita, mas às vezes precisa de alguns ajustes!"`,
+          tipo: "Vídeo educativo",
+          objetivo: "Inconsciente"
         }
       ],
-      engagement: [
+      'Consciente do Problema': [
         {
-          titulo: "Enquete: qual seu maior medo do aparelho?",
-          descricao: `Post interativo com enquete sobre medos comuns: dor, estética, tempo de tratamento, custo. Use as respostas para criar conteúdos futuros. Comente nas respostas dando dicas e tranquilizando. Engajamento garantido!`,
-          tipo: "Post interativo",
-          objetivo: "Engajar e conhecer público"
+          titulo: "Dentes 'tortos': quando isso vai além da estética",
+          descricao: `Aborde problemas funcionais dos dentes desalinhados: dificuldade de limpeza, desgaste, dores de cabeça, problemas na ATM. Use linguagem acessível. CTA: "Se você sente alguns desses sintomas, pode estar relacionado!"`,
+          tipo: "Vídeo educativo",
+          objetivo: "Consciente do Problema"
+        }
+      ],
+      'Consciente da Solução': [
+        {
+          titulo: "Ortodontia moderna: muito além do 'sorriso metálico'",
+          descricao: `Mostre as opções atuais: aparelhos estéticos, transparentes, removíveis. Compare prós e contras de cada um. Desmistifique a ortodontia para adultos.`,
+          tipo: "Vídeo comparativo",
+          objetivo: "Consciente da Solução"
+        }
+      ],
+      'Consciente do Produto': [
+        {
+          titulo: "Nossa abordagem ortodôntica: planejamento digital personalizado",
+          descricao: `Mostre como vocês fazem o planejamento ortodôntico: escaneamento 3D, simulação digital, acompanhamento. Destaque a precisão e conforto que isso proporciona.`,
+          tipo: "Vídeo institucional",
+          objetivo: "Consciente do Produto"
+        }
+      ],
+      'Totalmente Consciente': [
+        {
+          titulo: "Aparelho invisível: condição especial de junho",
+          descricao: `Oferta específica para aparelho transparente. Destaque facilidades de pagamento e inclua simulação gratuita. CTA direto: "Quer saber como ficaria seu sorriso? Agenda uma simulação grátis!"`,
+          tipo: "Post promocional",
+          objetivo: "Totalmente Consciente"
         }
       ]
     },
     'Endodontia': {
-      educational: [
+      'Inconsciente': [
         {
-          titulo: "Canal: por que esse procedimento salva seu dente",
-          descricao: `Vídeo explicativo sobre quando é necessário fazer canal, como funciona o procedimento e por que é a melhor opção para salvar o dente. Use analogias simples e desmistifique a dor. Tom acolhedor e profissional.`,
+          titulo: "Aquela dor de dente que vai e volta: você conhece?",
+          descricao: `Conte sobre dores intermitentes de forma empática. Não assuste, mas desperte a atenção para sinais que o corpo dá. Final: "Nosso corpo sempre nos avisa quando algo não está bem."`,
+          tipo: "Vídeo reflexivo",
+          objetivo: "Inconsciente"
+        }
+      ],
+      'Consciente do Problema': [
+        {
+          titulo: "Quando a dor de dente te acorda de madrugada",
+          descricao: `Aborde a dor de dente intensa, como ela afeta o sono, concentração, qualidade de vida. Mostre empatia total. Explique que geralmente indica infecção avançada. CTA: "Se isso está acontecendo, não espere piorar."`,
+          tipo: "Vídeo empático",
+          objetivo: "Consciente do Problema"
+        }
+      ],
+      'Consciente da Solução': [
+        {
+          titulo: "Tratamento de canal: salvando dentes condenados",
+          descricao: `Explique como o canal salva o dente natural, evitando extração. Desmistifique dor e complexidade. Use analogias simples. Tom: "Seu dente pode ser salvo!"`,
           tipo: "Vídeo educativo",
-          objetivo: "Educar e tranquilizar"
+          objetivo: "Consciente da Solução"
+        }
+      ],
+      'Consciente do Produto': [
+        {
+          titulo: "Endodontia na ${clinicName}: tecnologia para tratamentos sem dor",
+          descricao: `Mostre equipamentos modernos (microscópio, localizadores apicais, instrumentos rotatórios). Destaque como a tecnologia torna o tratamento mais rápido e confortável.`,
+          tipo: "Vídeo institucional",
+          objetivo: "Consciente do Produto"
+        }
+      ],
+      'Totalmente Consciente': [
+        {
+          titulo: "Dor de dente não espera! Atendimento de urgência",
+          descricao: `Post para casos de urgência. Destaque atendimento rápido e alívio imediato da dor. CTA urgente: "WhatsApp 24h para emergências odontológicas! Link na bio."`,
+          tipo: "Post promocional",
+          objetivo: "Totalmente Consciente"
         }
       ]
     }
   };
 
-  // Content distribution strategy
-  const contentTypes = ['educational', 'social', 'promotional', 'authority', 'engagement'];
-  const weekendTypes = ['engagement', 'social', 'authority'];
-  
-  // Generate 30 days of content
+  // Strategic weekly distribution
+  const weeklyStrategy = {
+    'Segunda': ['Consciente do Problema', 'Consciente da Solução'],
+    'Terça': ['Consciente do Produto', 'Inconsciente'],
+    'Quarta': ['Consciente da Solução', 'Consciente do Problema'],
+    'Quinta': ['Consciente do Produto', 'Totalmente Consciente'],
+    'Sexta': ['Totalmente Consciente', 'Consciente da Solução'],
+    'Sábado': ['Inconsciente', 'Consciente do Problema'],
+    'Domingo': ['Inconsciente', 'Consciente da Solução']
+  };
+
+  // Generate 30 days of strategic content
   const calendar = [];
   let dayCount = 0;
+  const usedContent = new Set(); // Track used content to avoid repetition
   
+  // Funnel distribution targets
+  const funnelDistribution = {
+    'Inconsciente': 6,
+    'Consciente do Problema': 8,
+    'Consciente da Solução': 8,
+    'Consciente do Produto': 5,
+    'Totalmente Consciente': 3
+  };
+  
+  const funnelCounter = { ...funnelDistribution };
+  Object.keys(funnelCounter).forEach(key => funnelCounter[key] = 0);
+
   for (let week = 1; week <= 5; week++) {
     for (let day = 1; day <= 7 && dayCount < 30; day++) {
       dayCount++;
       const date = `${String(dayCount).padStart(2, '0')}/06`;
       const isWeekend = day === 6 || day === 7;
       
-      // Select appropriate content type for the day
-      const availableTypes = isWeekend ? weekendTypes : contentTypes;
-      const contentType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+      // Get day name for strategy
+      const dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+      const dayName = dayNames[day === 7 ? 0 : day]; // Adjust for Sunday = 0
       
-      // Select a random procedure that the clinic offers
-      const selectedProcedure = procedures[Math.floor(Math.random() * procedures.length)];
+      // Select funnel stage based on day and remaining distribution
+      const possibleStages = weeklyStrategy[dayName] || ['Inconsciente'];
+      let selectedStage = possibleStages[0];
       
-      // Get content template for the selected procedure and type
-      const procedureContent = procedureTemplates[selectedProcedure];
-      let content;
-      
-      if (procedureContent && procedureContent[contentType]) {
-        const templates = procedureContent[contentType];
-        content = templates[Math.floor(Math.random() * templates.length)];
-      } else {
-        // Fallback to general educational content
-        content = generateFallbackContent(selectedProcedure, contentType, clinicName, city);
+      // Check if we need to balance the funnel
+      for (const stage of possibleStages) {
+        if (funnelCounter[stage] < funnelDistribution[stage]) {
+          selectedStage = stage;
+          break;
+        }
       }
+      
+      // Fallback if all preferred stages are full
+      if (funnelCounter[selectedStage] >= funnelDistribution[selectedStage]) {
+        for (const [stage, count] of Object.entries(funnelCounter)) {
+          if (count < funnelDistribution[stage]) {
+            selectedStage = stage;
+            break;
+          }
+        }
+      }
+      
+      // Select procedure and content
+      const selectedProcedure = procedures[Math.floor(Math.random() * procedures.length)];
+      const procedureContent = contentTemplates[selectedProcedure];
+      
+      let content;
+      if (procedureContent && procedureContent[selectedStage] && procedureContent[selectedStage].length > 0) {
+        const availableContent = procedureContent[selectedStage].filter(
+          c => !usedContent.has(`${c.titulo}-${selectedProcedure}`)
+        );
+        
+        if (availableContent.length > 0) {
+          content = availableContent[Math.floor(Math.random() * availableContent.length)];
+          usedContent.add(`${content.titulo}-${selectedProcedure}`);
+        } else {
+          content = generateFallbackContent(selectedProcedure, selectedStage, clinicName, city);
+        }
+      } else {
+        content = generateFallbackContent(selectedProcedure, selectedStage, clinicName, city);
+      }
+      
+      // Replace placeholders in content
+      const finalContent = {
+        ...content,
+        titulo: content.titulo.replace(/\$\{clinicName\}/g, clinicName),
+        descricao: content.descricao.replace(/\$\{clinicName\}/g, clinicName).replace(/\$\{city\}/g, city)
+      };
       
       calendar.push({
         id: dayCount,
         dia: date,
         week: week,
         day: day,
-        titulo: content.titulo,
-        descricao: content.descricao,
-        tipo: content.tipo,
-        objetivo: content.objetivo,
+        titulo: finalContent.titulo,
+        descricao: finalContent.descricao,
+        tipo: finalContent.tipo,
+        objetivo: finalContent.objetivo,
         procedimento: selectedProcedure,
         isWeekend: isWeekend
       });
+      
+      funnelCounter[selectedStage]++;
     }
   }
   
   return calendar;
 };
 
-const generateFallbackContent = (procedure, contentType, clinicName, city) => {
+const generateFallbackContent = (procedure, stage, clinicName, city) => {
   const fallbackTemplates = {
-    educational: {
-      titulo: `Tudo sobre ${procedure.toLowerCase()} que você precisa saber`,
-      descricao: `Vídeo educativo explicando os benefícios e processo do procedimento de ${procedure.toLowerCase()}. Use linguagem simples e mostre como a ${clinicName} realiza este tratamento com excelência. Termine convidando para uma consulta de avaliação.`,
+    'Inconsciente': {
+      titulo: `Curiosidade sobre ${procedure.toLowerCase()}: você sabia disso?`,
+      descricao: `Compartilhe uma curiosidade interessante sobre ${procedure.toLowerCase()} de forma descontraída. Use storytelling e desperte interesse sem falar de tratamento. Final: "Interessante, né? O que mais vocês gostariam de saber?"`,
+      tipo: "Post curiosidade",
+      objetivo: "Inconsciente"
+    },
+    'Consciente do Problema': {
+      titulo: `Sinais que você pode precisar de ${procedure.toLowerCase()}`,
+      descricao: `Aborde os sintomas e problemas que indicam a necessidade do procedimento. Use linguagem empática e não assustadora. Mostre compreensão pela situação. CTA: "Se você reconhece esses sinais, vamos conversar sem compromisso."`,
       tipo: "Vídeo educativo",
-      objetivo: "Educar"
+      objetivo: "Consciente do Problema"
     },
-    social: {
-      titulo: `Bastidores: atendimento de ${procedure.toLowerCase()} na ${clinicName}`,
-      descricao: `Mostre o ambiente acolhedor da clínica durante um atendimento de ${procedure.toLowerCase()}. Destaque o cuidado da equipe e a satisfação do paciente. Use música suave e cortes que transmitam confiança.`,
-      tipo: "Vídeo de bastidores",
-      objetivo: "Gerar confiança"
+    'Consciente da Solução': {
+      titulo: `Como ${procedure.toLowerCase()} pode transformar seu sorriso`,
+      descricao: `Explique os benefícios e o processo do procedimento de forma didática. Use linguagem simples e seja transparente sobre resultados e tempo. Tom educativo e acolhedor.`,
+      tipo: "Vídeo explicativo",
+      objetivo: "Consciente da Solução"
     },
-    promotional: {
-      titulo: `${procedure} com qualidade em ${city}`,
-      descricao: `Post promocional destacando os diferenciais da ${clinicName} para ${procedure.toLowerCase()}. Inclua informações sobre tecnologia, experiência da equipe e condições especiais. CTA claro para agendamento.`,
+    'Consciente do Produto': {
+      titulo: `${procedure} na ${clinicName}: nosso diferencial em ${city}`,
+      descricao: `Destaque como a ${clinicName} realiza este procedimento: tecnologia, experiência da equipe, acompanhamento personalizado. Posicione autoridade técnica com calor humano.`,
+      tipo: "Vídeo institucional",
+      objetivo: "Consciente do Produto"
+    },
+    'Totalmente Consciente': {
+      titulo: `${procedure}: condição especial válida só esta semana`,
+      descricao: `Oferta específica para o procedimento com call-to-action direto. Destaque urgência, facilite agendamento e inclua benefícios exclusivos. "Agende já pelo WhatsApp! Link na bio."`,
       tipo: "Post promocional",
-      objetivo: "Atrair pacientes"
-    },
-    authority: {
-      titulo: `Por que escolher a ${clinicName} para ${procedure.toLowerCase()}`,
-      descricao: `Conteúdo que reforça a autoridade da clínica no procedimento de ${procedure.toLowerCase()}. Mencione formação da equipe, casos de sucesso, tecnologia utilizada e diferenciais técnicos de forma acessível.`,
-      tipo: "Post institucional",
-      objetivo: "Demonstrar autoridade"
-    },
-    engagement: {
-      titulo: `Você sabia? Curiosidades sobre ${procedure.toLowerCase()}`,
-      descricao: `Post interativo com curiosidades interessantes sobre ${procedure.toLowerCase()}. Use formato pergunta/resposta ou mitos/verdades. Incentive comentários e compartilhamentos. Responda ativamente aos comentários.`,
-      tipo: "Post interativo",
-      objetivo: "Engajar"
+      objetivo: "Totalmente Consciente"
     }
   };
   
-  return fallbackTemplates[contentType] || fallbackTemplates.educational;
+  return fallbackTemplates[stage] || fallbackTemplates['Inconsciente'];
 };
