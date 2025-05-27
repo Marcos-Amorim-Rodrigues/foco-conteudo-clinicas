@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Calendar, Clock, TrendingUp, Users, Download, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ClinicModal } from '@/components/ClinicModal';
 import { CalendarView } from '@/components/CalendarView';
 import { useToast } from '@/hooks/use-toast';
+import emailjs from 'emailjs-com';
 
 const Index = () => {
   const [showModal, setShowModal] = useState(false);
@@ -12,21 +12,56 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
+  const sendEmail = (formData) => {
+    const templateParams = {
+      nome_clinica: formData.clinicName,
+      instagram: formData.instagram,
+      cidade: formData.city,
+      faturamento: formData.monthlyRevenue,
+      procedimentos: formData.procedures.join(', '),
+    };
+
+    return emailjs.send(
+      'service_53u6edm',
+      'template_6i8so5r',
+      templateParams,
+      'AENd6qqqchcIP5Kia'
+    ).then((response) => {
+      console.log('E-mail enviado com sucesso!', response.status, response.text);
+      return response;
+    }, (err) => {
+      console.error('Erro ao enviar e-mail:', err);
+      throw err;
+    });
+  };
+
   const handleGenerateCalendar = async (clinicData) => {
     setIsGenerating(true);
     
-    // Simular geração de calendário com IA
-    setTimeout(() => {
-      const mockCalendar = generateMockCalendar(clinicData);
-      setCalendarData(mockCalendar);
-      setShowModal(false);
-      setIsGenerating(false);
+    try {
+      // Send email first
+      await sendEmail(clinicData);
       
+      // Simular geração de calendário com IA
+      setTimeout(() => {
+        const mockCalendar = generateMockCalendar(clinicData);
+        setCalendarData(mockCalendar);
+        setShowModal(false);
+        setIsGenerating(false);
+        
+        toast({
+          title: "Calendário gerado com sucesso!",
+          description: "Seu calendário de 30 dias está pronto para uso. E-mail enviado com sucesso!",
+        });
+      }, 2000);
+    } catch (error) {
+      setIsGenerating(false);
       toast({
-        title: "Calendário gerado com sucesso!",
-        description: "Seu calendário de 30 dias está pronto para uso.",
+        title: "Erro ao processar solicitação",
+        description: "Houve um problema ao enviar o e-mail. Tente novamente.",
+        variant: "destructive"
       });
-    }, 2000);
+    }
   };
 
   const generateMockCalendar = (clinicData) => {
