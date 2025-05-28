@@ -20,6 +20,7 @@ const Index = () => {
       nome_clinica: formData.clinicName,
       instagram: formData.instagram,
       cidade: formData.city,
+      telefone: formData.telefone,
       faturamento: formData.monthlyRevenue,
       procedimentos: formData.procedures.join(', '),
     };

@@ -13,6 +13,7 @@ export const ClinicModal = ({ isOpen, onClose, onSubmit, isGenerating }) => {
     clinicName: '',
     instagram: '',
     city: '',
+    telefone: '',
     monthlyRevenue: '',
     procedures: []
   });
@@ -37,6 +38,15 @@ export const ClinicModal = ({ isOpen, onClose, onSubmit, isGenerating }) => {
     }));
   };
 
+  const handlePhoneChange = (value) => {
+    // Basic phone validation - allow only numbers, spaces, parentheses, hyphens and plus sign
+    const cleanValue = value.replace(/[^\d\s\(\)\-\+]/g, '');
+    setFormData(prev => ({
+      ...prev,
+      telefone: cleanValue
+    }));
+  };
+
   const handleProcedureChange = (procedure, checked) => {
     setFormData(prev => ({
       ...prev,
@@ -52,7 +62,7 @@ export const ClinicModal = ({ isOpen, onClose, onSubmit, isGenerating }) => {
   };
 
   const isFormValid = formData.clinicName && formData.instagram && formData.city && 
-                     formData.monthlyRevenue && formData.procedures.length > 0;
+                     formData.telefone && formData.monthlyRevenue && formData.procedures.length > 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -101,6 +111,21 @@ export const ClinicModal = ({ isOpen, onClose, onSubmit, isGenerating }) => {
               value={formData.city}
               onChange={(e) => handleInputChange('city', e.target.value)}
               placeholder="São Paulo, SP"
+              className="border-gray-300 focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="telefone" className="text-black font-medium">
+              WhatsApp *
+            </Label>
+            <Input
+              id="telefone"
+              type="tel"
+              value={formData.telefone}
+              onChange={(e) => handlePhoneChange(e.target.value)}
+              placeholder="Digite seu WhatsApp com DDD"
               className="border-gray-300 focus:border-blue-500"
               required
             />
