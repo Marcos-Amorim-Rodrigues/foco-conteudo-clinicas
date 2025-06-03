@@ -224,8 +224,8 @@ const Index = () => {
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">Contato</h4>
-              <p className="text-gray-400">contato@focomarketing.com.br</p>
-              <p className="text-gray-400">(11) 99999-9999</p>
+              <p className="text-gray-400">contato@agenciafocomkt.com.br</p>
+              <p className="text-gray-400">(38) 98818-0075</p>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center">
